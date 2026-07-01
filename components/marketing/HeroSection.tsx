@@ -211,8 +211,8 @@ export default function HeroSection() {
               ))}
 
               {/* Mini chart area */}
-              <div className="col-span-2 md:col-span-2 bg-[#ffffff] border border-[#e2e8f0] rounded-lg md:rounded-xl p-2 md:p-3">
-                <p className="text-[8px] md:text-[10px] text-[#64748b] mb-2"">Lead Growth</p>
+              <div className="md:col-span-2 bg-[#ffffff] border border-[#e2e8f0] rounded-lg md:rounded-xl p-2 md:p-3">
+                <p className="md:text-[10px] text-[#64748b] mb-2">Lead Growth</p>
                 <div className="flex items-end gap-1 h-10 md:h-12">
                   {[35, 52, 44, 68, 75, 88, 95].map((h, i) => (
                     <div
