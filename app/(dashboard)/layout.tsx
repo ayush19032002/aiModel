@@ -15,10 +15,13 @@ export default function DashboardLayout({
   return (
     <AuthGuard>
       <div className="flex h-screen overflow-hidden bg-[#f8fafc]">
-        <Sidebar />
+        {/* Desktop Sidebar - hidden on mobile */}
+        <div className="hidden md:flex">
+          <Sidebar />
+        </div>
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
           <TopBar />
-          <main className="flex-1 overflow-y-auto p-6">{children}</main>
+          <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
         </div>
       </div>
     </AuthGuard>

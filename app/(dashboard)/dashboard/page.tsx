@@ -62,13 +62,13 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Welcome bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#0f172a]">Good evening, Arjun 👋</h2>
+          <h2 className="text-lg md:text-xl font-bold text-[#0f172a]">Good evening, Arjun 👋</h2>
           <p className="text-sm text-[#64748b] mt-0.5">Here&apos;s your business performance for today</p>
         </div>
-        <div className="flex gap-3">
-          <Link href="/gbp/audit" className="inline-flex items-center gap-2 bg-[#2563eb] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-colors">
+        <div className="w-full sm:w-auto">
+          <Link href="/gbp/audit" className="inline-flex w-full sm:w-auto items-center justify-center gap-2 bg-[#2563eb] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-colors">
             <Zap className="w-4 h-4" />
             Run Audit
           </Link>
@@ -76,7 +76,7 @@ export default function DashboardPage() {
       </div>
 
       {/* AI Insight Banner */}
-      <div className="bg-[#2563eb]/10 border border-[#2563eb]/30 rounded-2xl p-4 flex items-start gap-3">
+      <div className="bg-[#2563eb]/10 border border-[#2563eb]/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start gap-3">
         <div className="w-8 h-8 rounded-lg bg-[#2563eb] flex items-center justify-center shrink-0">
           <Zap className="w-4 h-4 text-white" />
         </div>
@@ -87,7 +87,7 @@ export default function DashboardPage() {
       </div>
 
       {/* KPI Grid Row 1 */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-3 md:gap-4">
         <KpiCard label="GBP Score" value={kpiData.gbpScore} unit="/100" trend="+12 pts" trendUp color="#7c3aed">
           <div className="h-1.5 bg-[#f1f5f9] rounded-full">
             <div className="h-1.5 bg-[#2563eb] rounded-full" style={{ width: `${kpiData.gbpScore}%` }} />
@@ -103,15 +103,15 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts Row */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Lead Growth */}
-        <div className="md:col-span-2 bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5">
-          <div className="flex items-center justify-between mb-6">
+        <div className="md:col-span-2 bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
             <div>
               <h3 className="font-semibold text-[#0f172a]">Lead Growth</h3>
               <p className="text-xs text-[#64748b] mt-0.5">Monthly leads captured</p>
             </div>
-            <span className="text-xs font-semibold text-[#10b981] bg-[#10b981]/10 px-2 py-1 rounded-full">+34% vs last month</span>
+            <span className="text-xs font-semibold text-[#10b981] bg-[#10b981]/10 px-2 py-1 rounded-full whitespace-nowrap">+34% vs last month</span>
           </div>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={leadGrowthData}>
@@ -131,7 +131,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Customer Retention */}
-        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5">
+        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
           <div className="mb-6">
             <h3 className="font-semibold text-[#0f172a]">Customer Retention</h3>
             <p className="text-xs text-[#64748b] mt-0.5">This month</p>
@@ -146,7 +146,7 @@ export default function DashboardPage() {
               <Tooltip content={<CustomTooltip />} />
             </PieChart>
           </ResponsiveContainer>
-          <div className="flex gap-4 justify-center mt-2">
+          <div className="flex flex-wrap gap-3 justify-center mt-2">
             {retentionData.map((r: any) => (
               <div key={r.name} className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full" style={{ background: r.color }} />
@@ -158,9 +158,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Row 3 */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Review Growth */}
-        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5">
+        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
           <div className="flex items-center gap-2 mb-6">
             <Star className="w-4 h-4 text-[#f59e0b]" />
             <h3 className="font-semibold text-[#0f172a]">Review Growth</h3>
@@ -176,13 +176,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Keyword Rankings */}
-        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-[#2563eb]" />
-              <h3 className="font-semibold text-[#0f172a]">Keyword Rankings</h3>
+        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
+          <div className="flex items-center justify-between gap-2 mb-5">
+            <div className="flex items-center gap-2 min-w-0">
+              <Search className="w-4 h-4 text-[#2563eb] shrink-0" />
+              <h3 className="font-semibold text-[#0f172a] truncate">Keyword Rankings</h3>
             </div>
-            <Link href="/gbp/rankings" className="text-xs text-[#7c3aed] hover:text-[#2563eb]">View all</Link>
+            <Link href="/gbp/rankings" className="text-xs text-[#7c3aed] hover:text-[#2563eb] whitespace-nowrap">View all</Link>
           </div>
           <ul className="space-y-3">
             {rankingData.map((kw: any) => (
@@ -203,7 +203,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5">
+        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
           <h3 className="font-semibold text-[#0f172a] mb-5">Quick Actions</h3>
           <div className="space-y-2">
             {[
@@ -223,8 +223,8 @@ export default function DashboardPage() {
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${action.color}20` }}>
                     <Icon className="w-3.5 h-3.5" style={{ color: action.color }} />
                   </div>
-                  <p className="text-xs text-[#475569] group-hover:text-[#1e293b] flex-1">{action.label}</p>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-[#4b5563] group-hover:text-[#64748b]" />
+                  <p className="text-xs text-[#475569] group-hover:text-[#1e293b] flex-1 truncate">{action.label}</p>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-[#4b5563] group-hover:text-[#64748b] shrink-0" />
                 </Link>
               );
             })}
@@ -233,12 +233,12 @@ export default function DashboardPage() {
       </div>
 
       {/* WhatsApp + Revenue row */}
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Visibility trend */}
-        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
+          <div className="flex items-center justify-between gap-2 mb-6">
             <h3 className="font-semibold text-[#0f172a]">GBP Visibility Trend</h3>
-            <span className="text-xs text-[#2563eb] font-medium">Last 7 months</span>
+            <span className="text-xs text-[#2563eb] font-medium whitespace-nowrap">Last 7 months</span>
           </div>
           <ResponsiveContainer width="100%" height={150}>
             <LineChart data={visibilityData}>
@@ -252,26 +252,26 @@ export default function DashboardPage() {
         </div>
 
         {/* Revenue Impact */}
-        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5">
+        <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
           <h3 className="font-semibold text-[#0f172a] mb-2">Revenue Impact</h3>
           <p className="text-xs text-[#64748b] mb-6">Estimated from GBP-driven leads</p>
           <div className="flex items-end gap-2 mb-4">
-            <span className="text-5xl font-extrabold text-[#10b981]">₹4.8L</span>
+            <span className="text-4xl md:text-5xl font-extrabold text-[#10b981]">₹4.8L</span>
             <span className="text-sm text-[#64748b] mb-2">this month</span>
           </div>
           <div className="flex items-center gap-2 mb-6">
             <TrendingUp className="w-4 h-4 text-[#10b981]" />
             <span className="text-sm text-[#10b981] font-semibold">+23% vs last month</span>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 md:gap-3">
             {[
               { label: "Leads Value", value: "₹2.1L" },
               { label: "Repeat Revenue", value: "₹1.9L" },
               { label: "Upsells", value: "₹0.8L" },
             ].map((item) => (
-              <div key={item.label} className="bg-[#ffffff] border border-[#e2e8f0] rounded-xl p-3 text-center">
-                <p className="text-sm font-bold text-[#0f172a]">{item.value}</p>
-                <p className="text-[10px] text-[#64748b] mt-0.5">{item.label}</p>
+              <div key={item.label} className="bg-[#ffffff] border border-[#e2e8f0] rounded-xl p-2 md:p-3 text-center">
+                <p className="text-xs md:text-sm font-bold text-[#0f172a]">{item.value}</p>
+                <p className="text-[9px] md:text-[10px] text-[#64748b] mt-0.5">{item.label}</p>
               </div>
             ))}
           </div>

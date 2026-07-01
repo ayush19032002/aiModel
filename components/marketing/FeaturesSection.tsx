@@ -104,44 +104,44 @@ const features = [
 export default function FeaturesSection() {
   return (
     <section id="features" className="section bg-[#ffffff]">
-      <div className="container-custom">
-        <div className="text-center mb-16">
+      <div className="container-custom px-4 md:px-6">
+        <div className="text-center mb-12 md:mb-16">
           <span className="inline-block text-xs font-semibold text-[#2563eb] bg-[#2563eb]/10 border border-[#2563eb]/20 px-3 py-1 rounded-full mb-4">
             Platform Features
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold mb-4">
             Everything You Need to{" "}
             <span className="gradient-text">Dominate Local Search</span>
           </h2>
-          <p className="text-[#64748b] text-lg max-w-2xl mx-auto">
+          <p className="text-[#64748b] text-base md:text-lg max-w-2xl mx-auto px-2">
             A complete growth stack for local businesses — from visibility and
             reviews to conversations, leads, and revenue.
           </p>
         </div>
 
-        {/* Bento grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Bento grid - responsive */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {features.map((f, i) => {
             const Icon = f.icon;
             const isLarge = f.size === "large";
             return (
               <div
                 key={f.title}
-                className={`group bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-6 card-hover cursor-default ${
-                  isLarge ? "md:col-span-1 md:row-span-2" : ""
-                } ${i === 0 ? "md:col-span-1" : ""}`}
+                className={`group bg-[#ffffff] border border-[#e2e8f0] rounded-xl md:rounded-2xl p-4 md:p-6 card-hover cursor-default transition-all ${
+                  isLarge ? "sm:col-span-2 lg:col-span-1 lg:row-span-2" : ""
+                }`}
               >
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform group-hover:scale-110"
+                  className="w-10 md:w-12 h-10 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-5 transition-transform group-hover:scale-110"
                   style={{ background: `${f.color}18` }}
                 >
-                  <Icon className="w-6 h-6" style={{ color: f.color }} />
+                  <Icon className="w-5 md:w-6 h-5 md:h-6" style={{ color: f.color }} />
                 </div>
-                <h3 className="text-[#0f172a] font-semibold text-lg mb-2">{f.title}</h3>
-                <p className="text-[#64748b] text-sm leading-relaxed">{f.description}</p>
+                <h3 className="text-[#0f172a] font-semibold text-base md:text-lg mb-2">{f.title}</h3>
+                <p className="text-[#64748b] text-xs md:text-sm leading-relaxed">{f.description}</p>
                 {isLarge && (
                   <div
-                    className="mt-6 px-4 py-3 rounded-xl border text-xs font-medium"
+                    className="mt-4 md:mt-6 px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border text-xs font-medium"
                     style={{
                       background: `${f.color}10`,
                       borderColor: `${f.color}30`,

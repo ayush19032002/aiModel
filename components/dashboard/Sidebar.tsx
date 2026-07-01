@@ -154,10 +154,10 @@ export function Sidebar() {
         )}
       </div>
 
-      {/* Collapse toggle */}
+      {/* Collapse toggle - hidden on mobile */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 w-6 h-6 bg-[#f1f5f9] border border-[#cbd5e1] rounded-full flex items-center justify-center hover:bg-[#374151] transition-colors z-10"
+        className="hidden md:flex absolute -right-3 top-20 w-6 h-6 bg-[#f1f5f9] border border-[#cbd5e1] rounded-full items-center justify-center hover:bg-[#374151] transition-colors z-10"
       >
         {collapsed ? (
           <ChevronRight className="w-3 h-3 text-[#475569]" />
