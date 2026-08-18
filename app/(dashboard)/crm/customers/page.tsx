@@ -1,13 +1,17 @@
+"use client";
+import { useState, useEffect } from "react";
 import { Search, Phone, Mail, Star } from "lucide-react";
 
-const customers = [
-  { id: 1, name: "Rahul Mehta", business: "Personal", email: "rahul@email.com", phone: "+91 87654 32109", visits: 8, ltv: "₹24K", rating: 5, lastVisit: "Jul 8" },
-  { id: 2, name: "Priya Sharma", business: "Personal", email: "priya@email.com", phone: "+91 98765 43210", visits: 12, ltv: "₹36K", rating: 5, lastVisit: "Jul 10" },
-  { id: 3, name: "Kavita Desai", business: "Personal", email: "kavita@email.com", phone: "+91 76543 21098", visits: 5, ltv: "₹15K", rating: 4, lastVisit: "Jul 1" },
-  { id: 4, name: "Anil Shah", business: "Shah Corp", email: "anil@shahcorp.in", phone: "+91 65432 10987", visits: 3, ltv: "₹9K", rating: 4, lastVisit: "Jun 25" },
-];
-
 export default function CustomersPage() {
+  const [customers, setCustomers] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/crm/customers")
+      .then(res => res.json())
+      .then(data => setCustomers(data))
+      .catch(console.error);
+  }, []);
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">

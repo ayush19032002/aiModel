@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Globe, Check, Eye, Smartphone, Monitor, Upload } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const templates = [
   { id: "clinic", name: "Healthcare & Clinic", desc: "Clean, trust-building design for medical practices", color: "#10b981" },
@@ -15,6 +16,28 @@ export default function WebsitePage() {
   const [selectedTemplate, setSelectedTemplate] = useState("clinic");
   const [preview, setPreview] = useState<"desktop" | "mobile">("desktop");
   const [published, setPublished] = useState(false);
+
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const handlePublish = async () => {
+    setIsPublishing(true);
+    try {
+      const res = await fetch("/api/website/publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ template: selectedTemplate })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPublished(true);
+        toast.success(`Website published successfully!`);
+      }
+    } catch (e) {
+      toast.error("Failed to publish website");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -102,8 +125,8 @@ export default function WebsitePage() {
                 <Smartphone className="w-3.5 h-3.5" /> Mobile
               </button>
             </div>
-            <button onClick={() => setPublished(true)} className="inline-flex items-center gap-2 bg-[#10b981] text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-[#059669]">
-              <Upload className="w-4 h-4" /> {published ? "Published! ✓" : "Publish Website"}
+            <button onClick={handlePublish} disabled={isPublishing || published} className="inline-flex items-center gap-2 bg-[#10b981] text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-[#059669] disabled:opacity-50">
+              <Upload className="w-4 h-4" /> {isPublishing ? "Publishing..." : published ? "Published! ✓" : "Publish Website"}
             </button>
           </div>
           <div className={`mx-auto transition-all duration-300 ${preview === "mobile" ? "max-w-sm" : "max-w-full"}`}>

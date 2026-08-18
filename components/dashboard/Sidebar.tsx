@@ -8,6 +8,8 @@ import {
   ChevronRight, Building2, Bot, ChevronsUpDown, ExternalLink, Sparkles, Workflow
 } from "lucide-react";
 
+import { motion } from "framer-motion";
+
 const navGroups = [
   {
     label: "Overview",
@@ -18,40 +20,28 @@ const navGroups = [
   {
     label: "Google Business Profile",
     items: [
-      { href: "/gbp/audit", icon: Search, label: "Audit" },
-      { href: "/gbp/reviews", icon: Star, label: "Reviews" },
-      { href: "/gbp/rankings", icon: TrendingUp, label: "Rankings" },
-      { href: "/gbp/competitors", icon: Users, label: "Competitors" },
-      { href: "/gbp/posts", icon: FileText, label: "Posts" },
+      { href: "/gbp/scoring", icon: Search, label: "Profile Scoring" },
+      { href: "/gbp/reviews", icon: Star, label: "AI Review Reply" },
+      { href: "/gbp/media", icon: FileText, label: "AI Media Upload" },
+      { href: "/gbp/rankings", icon: TrendingUp, label: "Ranking Tracking" },
+      { href: "/gbp/competitors", icon: Users, label: "Competitor Analysis" },
     ],
   },
   {
-    label: "AI & Automation",
+    label: "AI Features",
     items: [
-      { href: "/ai/chatbot", icon: Bot, label: "AI Chatbot" },
+      { href: "/ai/website", icon: Globe, label: "AI Website Generator" },
       { href: "/ai/lead-generation", icon: Sparkles, label: "Lead Generation" },
-      { href: "/automations/workflows", icon: Workflow, label: "Workflows" },
-      { href: "/whatsapp/conversations", icon: MessageSquare, label: "WhatsApp" },
-      { href: "/whatsapp/automations", icon: Bot, label: "Automations" },
-      { href: "/whatsapp/templates", icon: FileText, label: "Templates" },
     ],
   },
   {
-    label: "CRM",
+    label: "WhatsApp Automation",
     items: [
-      { href: "/crm/leads", icon: Users, label: "Leads" },
-      { href: "/crm/customers", icon: Building2, label: "Customers" },
-      { href: "/crm/pipeline", icon: BarChart3, label: "Pipeline" },
-    ],
-  },
-  {
-    label: "Tools",
-    items: [
-      { href: "/website", icon: Globe, label: "Website Builder" },
-      { href: "/marketing/content", icon: Megaphone, label: "Content AI" },
-      { href: "/analytics", icon: BarChart3, label: "Analytics" },
-      { href: "/reports", icon: FileText, label: "Reports" },
-      { href: "/gbp/seo", icon: Search, label: "SEO Suggestions" },
+      { href: "/whatsapp/connection", icon: MessageSquare, label: "Connection" },
+      { href: "/whatsapp/contacts", icon: Users, label: "Manual Contacts" },
+      { href: "/whatsapp/broadcasts", icon: Megaphone, label: "Broadcasts" },
+      { href: "/whatsapp/bookings", icon: Bot, label: "Auto Bookings" },
+      { href: "/whatsapp/catalog", icon: Building2, label: "Catalog Upload" },
     ],
   },
 ];
@@ -110,7 +100,11 @@ export function Sidebar() {
                   pathname === item.href ||
                   (item.href !== "/dashboard" && pathname.startsWith(item.href));
                 return (
-                  <li key={item.href}>
+                  <motion.li 
+                    key={item.href}
+                    whileHover={{ scale: 1.02, x: 2 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <Link
                       href={item.href}
                       title={collapsed ? item.label : undefined}
@@ -123,7 +117,7 @@ export function Sidebar() {
                       <Icon className={`w-4 h-4 shrink-0 ${active ? "text-[#2563eb]" : ""}`} />
                       {!collapsed && <span>{item.label}</span>}
                     </Link>
-                  </li>
+                  </motion.li>
                 );
               })}
             </ul>
@@ -133,6 +127,13 @@ export function Sidebar() {
 
       {/* Bottom */}
       <div className="border-t border-[#e2e8f0] p-3 space-y-1">
+        <Link
+          href="/admin"
+          className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm text-[#2563eb] bg-[#2563eb]/10 hover:bg-[#2563eb]/20 transition-all font-medium ${collapsed ? "justify-center" : ""}`}
+        >
+          <Settings className="w-4 h-4 shrink-0" />
+          {!collapsed && <span>Admin Panel</span>}
+        </Link>
         <Link
           href="/settings"
           className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-sm text-[#64748b] hover:text-[#1e293b] hover:bg-[#ffffff] transition-all ${collapsed ? "justify-center" : ""}`}

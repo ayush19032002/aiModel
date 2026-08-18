@@ -11,7 +11,25 @@ const templates = [
 
 export default function ContentGeneratorPage() {
   const [input, setInput] = useState("Create a polished promotional caption for a dental clinic");
-  const [output, setOutput] = useState("Here is a ready-to-publish social post: 'Smile brighter this season with our premium whitening offer. Book your appointment today and enjoy a free consultation.'");
+  const [output, setOutput] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    try {
+      const res = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: input, contentType: "marketing_copy" })
+      });
+      const data = await res.json();
+      setOutput(data.content || "Failed to generate content");
+    } catch (error) {
+      setOutput("Error connecting to AI service.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -31,17 +49,20 @@ export default function ContentGeneratorPage() {
           </div>
           <textarea value={input} onChange={(event) => setInput(event.target.value)} className="min-h-32 w-full rounded-xl border border-slate-200 p-3 text-sm" />
           <div className="flex gap-3">
-            <button onClick={() => setOutput("A fresh version of your content is ready for review.")} className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
-              <Sparkles className="h-4 w-4" /> Generate
+            <button onClick={handleGenerate} disabled={isGenerating || !input} className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50">
+              <Sparkles className="h-4 w-4" /> {isGenerating ? "Generating..." : "Generate"}
             </button>
-            <button className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
-              <RefreshCw className="h-4 w-4" /> Rewrite
+            <button onClick={handleGenerate} disabled={isGenerating || !input} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50 hover:bg-slate-50">
+              <RefreshCw className={`h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} /> Rewrite
             </button>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-            <div className="mb-2 flex items-center gap-2 font-semibold text-slate-900"><Send className="h-4 w-4 text-blue-600" /> Generated output</div>
-            {output}
-          </div>
+          
+          {output && (
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 animate-fade-in">
+              <div className="mb-2 flex items-center gap-2 font-semibold text-slate-900"><Send className="h-4 w-4 text-blue-600" /> Generated output</div>
+              <p className="whitespace-pre-wrap">{output}</p>
+            </div>
+          )}
         </div>
       </SectionCard>
     </div>

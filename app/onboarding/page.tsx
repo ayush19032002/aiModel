@@ -127,7 +127,14 @@ export default function OnboardingPage() {
                 )}
                 {isActive && (
                   <button
-                    onClick={handleStep}
+                    onClick={(e) => {
+                      if (current === 0) {
+                        e.preventDefault();
+                        window.location.href = 'http://localhost:3001/api/auth/google';
+                      } else {
+                        handleStep();
+                      }
+                    }}
                     className="shrink-0 inline-flex items-center gap-1.5 bg-[#2563eb] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-colors"
                   >
                     {step.action}

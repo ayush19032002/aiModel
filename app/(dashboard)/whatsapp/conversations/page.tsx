@@ -22,18 +22,33 @@ export default function ConversationsPage() {
   }, []);
 
   const fetchConversations = async () => {
-    const res = await fetch("/api/whatsapp");
-    const data = await res.json();
-    const parsedData = data.map((c: any) => ({
-      ...c,
-      time: new Date(c.time),
-      messages: c.messages.map((m: any) => ({ ...m, time: new Date(m.time) }))
-    }));
-    setConversations(parsedData);
-    if (!selectedId && parsedData.length > 0) {
-      setSelectedId(parsedData[0].id);
+    try {
+      const res = await fetch("/api/whatsapp/conversations");
+      const data = await res.json();
+      const parsedData = data.map((c: any) => ({
+        id: c.id,
+        contact: c.contact?.name || c.customerPhone,
+        phone: c.customerPhone,
+        status: c.status === "ACTIVE" ? "lead" : "customer",
+        time: new Date(c.lastMessageAt),
+        unread: 0,
+        lastMessage: c.messages?.[0]?.content || "No messages yet.",
+        messages: c.messages?.map((m: any) => ({
+          id: m.id,
+          from: m.direction === 'INCOMING' ? 'customer' : 'ai',
+          text: m.content,
+          time: new Date(m.sentAt)
+        })) || []
+      }));
+      setConversations(parsedData);
+      if (!selectedId && parsedData.length > 0) {
+        setSelectedId(parsedData[0].id);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const selected = conversations.find(c => c.id === selectedId) || conversations[0];

@@ -27,15 +27,25 @@ export default function ReviewsPage() {
   }, []);
 
   const fetchReviews = async () => {
-    const res = await fetch("/api/reviews");
-    const data = await res.json();
-    const parsedData = data.map((r: any) => ({
-      ...r,
-      date: new Date(r.date),
-      replyText: r.replied ? "Thank you for your feedback! We look forward to serving you again." : ""
-    }));
-    setReviews(parsedData);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/reviews");
+      const data = await res.json();
+      const parsedData = data.map((r: any) => ({
+        id: r.id,
+        author: r.reviewerName,
+        rating: r.rating,
+        text: r.comment,
+        date: new Date(r.reviewTime),
+        replied: r.isReplied,
+        replyText: r.reply || "",
+        sentiment: r.rating >= 4 ? "positive" : "negative"
+      }));
+      setReviews(parsedData);
+      setLoading(false);
+    } catch (e) {
+      console.error(e);
+      setLoading(false);
+    }
   };
 
   const filtered = reviews.filter(r => {
@@ -59,36 +69,59 @@ export default function ReviewsPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleGenerateReply = (review: typeof reviews[0], tone: "professional" | "friendly" | "apologetic") => {
+  const [generatingAI, setGeneratingAI] = useState(false);
+
+  const handleGenerateReply = async (review: typeof reviews[0], tone: "professional" | "friendly" | "apologetic") => {
     setSelectedTone(tone);
     setActiveReplyId(review.id);
+    setGeneratingAI(true);
+    setGeneratedText("Generating AI response...");
     
-    const authorName = review.author.split(" ")[0];
-    const replies = {
-      professional: `Dear ${authorName}, thank you for your feedback. We value your support and are dedicated to providing the highest quality care. Best regards, ${businessName}.`,
-      friendly: `Hi ${authorName}! Thanks so much for the wonderful review. 😊 The team loved reading this, and we can't wait to see you again soon!`,
-      apologetic: `Dear ${authorName}, we sincerely apologize for not meeting your expectations during your visit. We would love to make this right. Please call us directly so we can resolve this personally.`,
-    };
-    
-    setGeneratedText(replies[tone]);
+    try {
+      const res = await fetch(`/api/reviews/${review.id}/ai-reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tone, reviewText: review.text, rating: review.rating }),
+      });
+      const data = await res.json();
+      setGeneratedText(data.reply || "Failed to generate reply.");
+    } catch (error) {
+      setGeneratedText("Error connecting to AI service.");
+    } finally {
+      setGeneratingAI(false);
+    }
   };
 
   const handlePublishReply = async (id: string) => {
+    const textToPublish = generatedText;
+    
     // Optimistic update
     setReviews(prev =>
-      prev.map(r => (r.id === id ? { ...r, replied: true, replyText: generatedText } : r))
+      prev.map(r => (r.id === id ? { ...r, replied: true, replyText: textToPublish } : r))
     );
     setActiveReplyId(null);
     setGeneratedText("");
 
     // API call
-    await fetch(`/api/reviews/${id}/reply`, { method: "POST" });
+    await fetch(`/api/reviews/${id}/reply`, { 
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reply: textToPublish })
+    });
   };
 
-  const handleDeleteReply = (id: string) => {
+  const handleDeleteReply = async (id: string) => {
+    // Optimistic update
     setReviews(prev =>
       prev.map(r => (r.id === id ? { ...r, replied: false, replyText: "" } : r))
     );
+
+    // API call
+    try {
+      await fetch(`/api/reviews/${id}/reply`, { method: "DELETE" });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

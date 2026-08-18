@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, Building2, Link2, CreditCard, Users, Bell, Code } from "lucide-react";
 
 const tabs = [
@@ -27,6 +27,19 @@ const teamMembers = [
 
 export default function SettingsPage() {
   const [active, setActive] = useState("profile");
+  const [integrationSuccess, setIntegrationSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("integration_success")) {
+        setIntegrationSuccess(true);
+        setActive("integrations");
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  }, []);
 
   return (
     <div className="animate-fade-in">
@@ -34,6 +47,18 @@ export default function SettingsPage() {
         <h2 className="text-xl font-bold text-[#0f172a]">Settings</h2>
         <p className="text-sm text-[#64748b] mt-0.5">Manage your account, business, and integrations</p>
       </div>
+
+      {integrationSuccess && (
+        <div className="mb-6 bg-[#10b981]/10 border border-[#10b981]/20 rounded-xl p-4 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#10b981] flex items-center justify-center shrink-0">
+            <Link2 className="w-4 h-4 text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-[#065f46]">Integration Successful</p>
+            <p className="text-xs text-[#047857] mt-0.5">Your Google Business Profile is now connected to the platform.</p>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-6">
         {/* Tab sidebar */}
@@ -95,7 +120,14 @@ export default function SettingsPage() {
                     <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: `${intg.color}15`, color: intg.color }}>
                       {intg.status}
                     </span>
-                    <button className="text-xs bg-[#ffffff] border border-[#e2e8f0] text-[#1e293b] px-3 py-1.5 rounded-lg hover:border-[#cbd5e1]">
+                    <button 
+                      onClick={() => {
+                        if (intg.name === "Google Business Profile") {
+                          window.location.href = 'http://localhost:3001/api/auth/google';
+                        }
+                      }}
+                      className="text-xs bg-[#ffffff] border border-[#e2e8f0] text-[#1e293b] px-3 py-1.5 rounded-lg hover:border-[#cbd5e1]"
+                    >
                       {intg.status === "connected" ? "Manage" : "Connect"}
                     </button>
                   </div>

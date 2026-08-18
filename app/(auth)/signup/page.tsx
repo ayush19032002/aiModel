@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Zap, ArrowRight, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 const steps = ["Account", "Business", "Goals", "Done"];
 
@@ -11,11 +12,36 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleNext = (e: React.FormEvent) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  const handleNext = async (e: React.FormEvent) => {
     e.preventDefault();
     if (step < 2) { setStep(step + 1); return; }
+    
     setLoading(true);
-    setTimeout(() => router.push("/onboarding"), 600);
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name: `${firstName} ${lastName}` }),
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        window.localStorage.setItem("gbp_token", data.token);
+        toast.success("Account created successfully!");
+        router.push("/onboarding");
+      } else {
+        toast.error(data.error || "Registration failed");
+      }
+    } catch (err) {
+      toast.error("Error connecting to server");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,20 +92,20 @@ export default function SignupPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-[#1e293b] mb-2">First name</label>
-                  <input type="text" className="w-full px-4 py-3 text-sm rounded-xl" placeholder="Arjun" required />
+                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} className="w-full px-4 py-3 text-sm rounded-xl" placeholder="Arjun" required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-[#1e293b] mb-2">Last name</label>
-                  <input type="text" className="w-full px-4 py-3 text-sm rounded-xl" placeholder="Sharma" required />
+                  <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} className="w-full px-4 py-3 text-sm rounded-xl" placeholder="Sharma" required />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#1e293b] mb-2">Email address</label>
-                <input type="email" className="w-full px-4 py-3 text-sm rounded-xl" placeholder="you@business.com" required />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-3 text-sm rounded-xl" placeholder="you@business.com" required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#1e293b] mb-2">Password</label>
-                <input type="password" className="w-full px-4 py-3 text-sm rounded-xl" placeholder="Min 8 characters" required />
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full px-4 py-3 text-sm rounded-xl" placeholder="Min 8 characters" required />
               </div>
             </>
           )}
@@ -137,7 +163,7 @@ export default function SignupPage() {
 
         <p className="text-center text-sm text-[#64748b] mt-6">
           Already have an account?{" "}
-          <Link href="https://wa.me/911234567890?text=Hi!%20I%20want%20to%20sign%20in%20to%20my%20GBP%20Growth%20Pro%20account." className="text-[#7c3aed] hover:text-[#2563eb] font-medium">
+          <Link href="/login" className="text-[#7c3aed] hover:text-[#2563eb] font-medium">
             Sign in
           </Link>
         </p>

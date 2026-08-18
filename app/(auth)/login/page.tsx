@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Eye, EyeOff, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 function isValidEmail(email: string) {
   return /.+@.+\..+/.test(email);
@@ -11,7 +12,6 @@ function isValidEmail(email: string) {
 export default function LoginPage() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -21,29 +21,34 @@ export default function LoginPage() {
     const password = String(formData.get("password") || "");
 
     if (!isValidEmail(email) || password.length < 6) {
-      setError("Please enter a valid email and a password with at least 6 characters.");
+      toast.error("Please enter a valid email and a password with at least 6 characters.");
       return;
     }
 
     setLoading(true);
-    setError(null);
 
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await response.json();
-    setLoading(false);
+      const data = await response.json();
+      setLoading(false);
 
-    if (!response.ok) {
-      setError(data.error || "Unable to sign in.");
-      return;
+      if (!response.ok) {
+        toast.error(data.error || "Unable to sign in.");
+        return;
+      }
+
+      window.localStorage.setItem("gbp_token", data.token);
+      toast.success("Welcome back!");
+      router.push("/dashboard");
+    } catch (err) {
+      setLoading(false);
+      toast.error("Error connecting to server");
     }
-
-    window.localStorage.setItem("gbp_token", data.token);
-    router.push("/dashboard");
   };
 
   return (
@@ -65,7 +70,6 @@ export default function LoginPage() {
         <p className="text-[#64748b] text-xs md:text-sm mb-6 md:mb-8">Sign in to your account to continue</p>
 
         <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
-          {error ? <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs md:text-sm text-red-600">{error}</p> : null}
           <div>
             <label className="block text-xs md:text-sm font-medium text-[#1e293b] mb-2" htmlFor="email">
               Email address
@@ -137,7 +141,7 @@ export default function LoginPage() {
 
         <p className="text-center text-xs md:text-sm text-[#64748b] mt-4 md:mt-6">
           Don&apos;t have an account?{" "}
-          <Link href="https://wa.me/911234567890?text=Hi!%20I%20want%20to%20grow%20my%20Google%20Business%20Profile%20and%20start%20my%20free%20audit." className="text-[#7c3aed] hover:text-[#2563eb] font-medium">
+          <Link href="/signup" className="text-[#7c3aed] hover:text-[#2563eb] font-medium">
             Sign up free
           </Link>
         </p>

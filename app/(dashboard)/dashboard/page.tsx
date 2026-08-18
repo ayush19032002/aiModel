@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 function KpiCard({
   label, value, unit, trend, trendUp, color, children
@@ -17,7 +18,7 @@ function KpiCard({
   trend?: string; trendUp?: boolean; color: string; children?: React.ReactNode;
 }) {
   return (
-    <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5 card-hover">
+    <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-5 card-hover h-full">
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-[#64748b]">{label}</p>
         {trend && (
@@ -48,6 +49,19 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
   );
 };
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
+};
+
 export default function DashboardPage() {
   const [data, setData] = useState<any>(null);
 
@@ -60,9 +74,14 @@ export default function DashboardPage() {
   const { kpi: kpiData, leadGrowth: leadGrowthData, reviewGrowth: reviewGrowthData, visibility: visibilityData, retention: retentionData, ranking: rankingData } = data;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <motion.div 
+      className="space-y-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
       {/* Welcome bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-lg md:text-xl font-bold text-[#0f172a]">Good evening, Arjun 👋</h2>
           <p className="text-sm text-[#64748b] mt-0.5">Here&apos;s your business performance for today</p>
@@ -73,10 +92,10 @@ export default function DashboardPage() {
             Run Audit
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       {/* AI Insight Banner */}
-      <div className="bg-[#2563eb]/10 border border-[#2563eb]/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start gap-3">
+      <motion.div variants={itemVariants} className="bg-[#2563eb]/10 border border-[#2563eb]/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start gap-3">
         <div className="w-8 h-8 rounded-lg bg-[#2563eb] flex items-center justify-center shrink-0">
           <Zap className="w-4 h-4 text-white" />
         </div>
@@ -84,10 +103,10 @@ export default function DashboardPage() {
           <p className="text-sm font-semibold text-[#1d4ed8] mb-1">AI Insight · 2 new opportunities detected</p>
           <p className="text-sm text-[#475569]">Adding 5 more photos could increase your GBP Score by +8 points and bring ~40 more profile views/month. <a href="/gbp/audit" className="text-[#2563eb] underline">View audit →</a></p>
         </div>
-      </div>
+      </motion.div>
 
       {/* KPI Grid Row 1 */}
-      <div className="grid grid-cols-2 gap-3 md:gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3 md:gap-4">
         <KpiCard label="GBP Score" value={kpiData.gbpScore} unit="/100" trend="+12 pts" trendUp color="#7c3aed">
           <div className="h-1.5 bg-[#f1f5f9] rounded-full">
             <div className="h-1.5 bg-[#2563eb] rounded-full" style={{ width: `${kpiData.gbpScore}%` }} />
@@ -100,10 +119,10 @@ export default function DashboardPage() {
         </KpiCard>
         <KpiCard label="Monthly Leads" value={kpiData.monthlyLeads} trend="+34" trendUp color="#10b981" />
         <KpiCard label="Review Rating" value="4.7" unit="★" trend="+0.3" trendUp color="#f59e0b" />
-      </div>
+      </motion.div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Lead Growth */}
         <div className="md:col-span-2 bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
@@ -155,10 +174,10 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Row 3 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Review Growth */}
         <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
           <div className="flex items-center gap-2 mb-6">
@@ -230,10 +249,10 @@ export default function DashboardPage() {
             })}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* WhatsApp + Revenue row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Visibility trend */}
         <div className="bg-[#ffffff] border border-[#e2e8f0] rounded-2xl p-4 md:p-5">
           <div className="flex items-center justify-between gap-2 mb-6">
@@ -276,7 +295,7 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

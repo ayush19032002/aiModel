@@ -19,7 +19,7 @@ export default function LeadsPage() {
 
   const fetchLeads = async () => {
     setLoading(true);
-    const res = await fetch("/api/crm");
+    const res = await fetch("/api/crm/leads");
     const data = await res.json();
     // Convert date strings back to Date objects
     const parsedData = data.map((l: any) => ({ ...l, date: new Date(l.date) }));
@@ -29,7 +29,7 @@ export default function LeadsPage() {
 
   const handleAddLead = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch("/api/crm", {
+    const res = await fetch("/api/crm/leads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newLead)

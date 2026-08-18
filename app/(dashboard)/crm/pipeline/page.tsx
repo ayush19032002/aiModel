@@ -1,5 +1,6 @@
 "use client";
-import { leadsData, type LeadStage } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
+import { type LeadStage } from "@/lib/mock-data";
 import { Plus, MoreHorizontal, Calendar, DollarSign } from "lucide-react";
 
 const stages: { id: LeadStage; label: string; color: string }[] = [
@@ -13,12 +14,24 @@ const stages: { id: LeadStage; label: string; color: string }[] = [
 ];
 
 export default function PipelinePage() {
+  const [leadsData, setLeadsData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/crm/leads")
+      .then(res => res.json())
+      .then(data => {
+        const parsed = data.map((l: any) => ({ ...l, date: new Date(l.date) }));
+        setLeadsData(parsed);
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold text-[#0f172a]">CRM Pipeline</h2>
-          <p className="text-sm text-[#64748b] mt-0.5">{leadsData.length} total leads · ₹3.5L pipeline value</p>
+          <p className="text-sm text-[#64748b] mt-0.5">{leadsData.length} total leads</p>
         </div>
         <button className="inline-flex items-center gap-2 bg-[#2563eb] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#1d4ed8]">
           <Plus className="w-4 h-4" /> Add Lead
